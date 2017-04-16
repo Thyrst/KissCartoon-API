@@ -36,6 +36,7 @@ setup(
         'js2py',
         'grab',
         'lxml',
+        'pycurl',
     ],
 
     keywords="API kisscartoon",
