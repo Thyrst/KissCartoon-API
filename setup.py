@@ -35,6 +35,7 @@ setup(
     install_requires=[
         'js2py',
         'grab',
+        'lxml',
     ],
 
     keywords="API kisscartoon",
