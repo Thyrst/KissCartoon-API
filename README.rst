@@ -14,7 +14,7 @@ The package is on Pypi, so you can install it simply with ``pip install kisscart
 Usage
 -----
 
-Instructions for use can be found at the webpage of full documentation: `kisscartoon.rtfd.org <http://kisscartoon.rtfd.org>`_
+Instructions for use can be found at the webpage of full documentation: `kisscartoon-api.rtfd.org <http://kisscartoon-api.rtfd.org>`_
 
 
 Example of use
