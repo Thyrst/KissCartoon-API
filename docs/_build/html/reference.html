@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Reference Guide &#8212; KissCartoon API 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="KissCartoon API’s documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="reference-guide">
+<h1>Reference Guide<a class="headerlink" href="#reference-guide" title="Permalink to this headline">¶</a></h1>
+<p>This is a brief introduction to all KissCartoon API&#8217;s features.</p>
+<div class="section" id="import">
+<h2>Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
+<p>You&#8217;ll get all necessary by this import:</p>
+<p><code class="docutils literal"><span class="pre">from</span> <span class="pre">KissCartoon</span> <span class="pre">import</span> <span class="pre">KissCartoon,</span> <span class="pre">GENRE,</span> <span class="pre">STATUS</span></code></p>
+</div>
+<div class="section" id="kisscartoon">
+<span id="id1"></span><h2>KissCartoon<a class="headerlink" href="#kisscartoon" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">KissCartoon</span></code> class represent object of a specific page.
+As argument you pass URL of a site, default site is <a class="reference external" href="http://kisscartoon.io">kisscartoon.io</a>,
+but the domain name can change whenever, what was reason to do it this way.
+Also for accesing mirror sites with this API.</p>
+<p>With <code class="docutils literal"><span class="pre">KissCartoon</span></code> you can access lists of top ten series that are on the home page.
+You can get them with properties <code class="docutils literal"><span class="pre">newest</span></code>, <code class="docutils literal"><span class="pre">most_popular</span></code> and <code class="docutils literal"><span class="pre">recently_added</span></code>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kiss</span> <span class="o">=</span> <span class="n">KissCartoon</span><span class="p">()</span> <span class="c1"># same as KissCartoon(&#39;kiscartoon.io&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">kiss</span><span class="o">.</span><span class="n">newest</span><span class="p">)</span>
+<span class="go">[   Series(title=&#39;Smurfs: The Lost Village&#39;, ...),</span>
+<span class="go">    Series(title=&#39;Leap!&#39;, ...),</span>
+<span class="go">    Series(title=&#39;We Bare Bears Season 3&#39;, ...),</span>
+<span class="go">    Series(title=&#39;Archer - Season 8&#39;, ...),</span>
+<span class="go">    Series(title=&#39;Teen Titans: The Judas Contract&#39;, ...),</span>
+<span class="go">    Series(title=&#39;SpongeBob Sea Side Story (2017)&#39;, ...),</span>
+<span class="go">    Series(title=&#39;Final Fantasy VII: Advent Children Complete&#39;, ...),</span>
+<span class="go">    Series(title=&#39;The Boss Baby (2017)&#39;, ...),</span>
+<span class="go">    Series(title=&#39;Tangled: The Series&#39;, ...),</span>
+<span class="go">    Series(title=&#39;The Grim Adventures of the KND&#39;, ...)]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">KissCartoon</span></code> is also used for creating a <a class="reference internal" href="#cartoonlist"><span class="std std-ref">CartoonList</span></a>. There are three methods:
+<code class="docutils literal"><span class="pre">.search</span></code>, <code class="docutils literal"><span class="pre">.list</span></code> and <code class="docutils literal"><span class="pre">.list_genre</span></code>: each method returns a <a class="reference internal" href="#cartoonlist"><span class="std std-ref">CartoonList</span></a>.
+The difference is that each method allows slightly different filtering of results.</p>
+<div class="section" id="list-method">
+<h3>.list method<a class="headerlink" href="#list-method" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">.list</span></code> method takes <code class="docutils literal"><span class="pre">first_letter</span></code>, <code class="docutils literal"><span class="pre">status</span></code> and <code class="docutils literal"><span class="pre">page</span></code> as arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">first_letter:</th><td class="field-body">Filter series by an initial letter.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">status:</th><td class="field-body">Filter series by their current status (ongoing/completed).
+You should use predefined constants. See <a class="reference internal" href="#constants"><span class="std std-ref">Constants</span></a>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">page:</th><td class="field-body">Set the list to a given page. Default is 1</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kiss</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">first_letter</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">STATUS</span><span class="o">.</span><span class="n">ONGOING</span><span class="p">)</span>
+<span class="go">CartoonList(url=&#39;https://kisscartoon.io/Status/Ongoing/?c=r&amp;&#39;, page=1)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="list-genre-method">
+<h3>.list_genre method<a class="headerlink" href="#list-genre-method" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">.list_genre</span></code> method takes <code class="docutils literal"><span class="pre">genre</span></code> and <code class="docutils literal"><span class="pre">page</span></code> as arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">genre:</th><td class="field-body">Filter series by their genre. See <a class="reference internal" href="#constants"><span class="std std-ref">Constants</span></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">page:</th><td class="field-body">Set the list to a given page. Default is 1</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kiss</span><span class="o">.</span><span class="n">list_genre</span><span class="p">(</span><span class="n">GENRE</span><span class="o">.</span><span class="n">ADVENTURE</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">CartoonList(url=&#39;https://kisscartoon.io/Genre/Adventure/?&#39;, page=3)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="search-method">
+<h3>.search method<a class="headerlink" href="#search-method" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">.search</span></code> method takes <code class="docutils literal"><span class="pre">title</span></code>, <code class="docutils literal"><span class="pre">genres</span></code>, <code class="docutils literal"><span class="pre">status</span></code> and <code class="docutils literal"><span class="pre">page</span></code> as arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">title:</th><td class="field-body">Search series by their name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">genres:</th><td class="field-body">Search series by their genres. It should be list of wanted genres.)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">status:</th><td class="field-body">Search series by their current status (ongoing/completed).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">page:</th><td class="field-body">Set the list to a given page. Default is 1</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">series</span> <span class="ow">in</span> <span class="n">kiss</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;rick&#39;</span><span class="p">,</span> <span class="n">genres</span><span class="o">=</span><span class="p">[</span><span class="n">GENRE</span><span class="o">.</span><span class="n">ADVENTURE</span><span class="p">,</span> <span class="n">GENRE</span><span class="o">.</span><span class="n">COMEDY</span><span class="p">]):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">Rick and Morty Extras</span>
+<span class="go">Rick and Morty Season 2</span>
+<span class="go">Rick and Morty Season 1</span>
+<span class="go">Rick and Morty - Season 3</span>
+<span class="go">Rick &amp; Steve the Happiest Gay Couple in All the World</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="cartoonlist">
+<span id="id2"></span><h2>CartoonList<a class="headerlink" href="#cartoonlist" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">CartoonList</span></code> represents a list of series that is available on the webpage.
+We can create list by our own with it&#8217;s URL. However it&#8217;s better to use
+<a class="reference internal" href="#kisscartoon"><span class="std std-ref">KissCartoon</span></a> object which will generate the URL for us.</p>
+<p><code class="docutils literal"><span class="pre">CartoonList</span></code> has following attributes:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">url:</th><td class="field-body">URL of a list on the current page</td>
+</tr>
+<tr class="field-even field"><th class="field-name">page:</th><td class="field-body">Current page</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">max_page:</th><td class="field-body">Number of pages in a current list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">series:</th><td class="field-body">Series on the current page</td>
+</tr>
+</tbody>
+</table>
+<p>You can use <code class="docutils literal"><span class="pre">.next</span></code> and <code class="docutils literal"><span class="pre">.back</span></code> methods for navigating through a list.
+When you attempt to go beyond the limits (<code class="docutils literal"><span class="pre">1</span></code> and``max_page``), method raises
+<code class="docutils literal"><span class="pre">PaginatorError</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">kisscartoon</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kiss_list</span> <span class="o">=</span> <span class="n">KissCartoon</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kiss_list</span><span class="o">.</span><span class="n">back</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;/home/thyrst/Tools/kisscartoon/kisscartoon.py&quot;</span>, line <span class="m">356</span>, in <span class="n">back</span>
+    <span class="k">raise</span> <span class="n">PaginatorError</span><span class="p">(</span><span class="s1">&#39;No previous page.&#39;</span><span class="p">)</span>
+<span class="gr">kisscartoon.PaginatorError</span>: <span class="n">No previous page.</span>
+</pre></div>
+</div>
+<p>For navigating to any random page, you can use <code class="docutils literal"><span class="pre">.goto</span></code> method which takes
+page number as an argument. However, goto won&#8217;t check if you attempt to go
+on an empty page, therefore it&#8217;s better to use precedent methods.</p>
+<p>For getting sum of series on all pages, simply call <code class="docutils literal"><span class="pre">len</span></code> function on a list:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">kiss_list</span><span class="p">)</span>
+<span class="go">4403</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">CartoonList</span></code> is a subclass of <code class="docutils literal"><span class="pre">Iterator</span></code>, so you can iterate over it:</p>
+<div class="highlight-default" id="iterator-example"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ongoing</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">series</span> <span class="ow">in</span> <span class="n">kiss_list</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">series</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">STATUS</span><span class="o">.</span><span class="n">ONGOING</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">ongoing</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ongoing: </span><span class="si">%d%%</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">ongoing</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">kiss_list</span><span class="p">)))</span>
+<span class="go">Ongoing: 6%</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="series">
+<span id="id3"></span><h2>Series<a class="headerlink" href="#series" title="Permalink to this headline">¶</a></h2>
+<p>Series represents one season of series. Object has following attributes:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">title:</th><td class="field-body">Name of series</td>
+</tr>
+<tr class="field-even field"><th class="field-name">url:</th><td class="field-body">URL</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">image:</th><td class="field-body">URL of image cover</td>
+</tr>
+<tr class="field-even field"><th class="field-name">genres:</th><td class="field-body">List of genres of series</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">latest_episode:</th><td class="field-body">Latest Added episode of series</td>
+</tr>
+<tr class="field-even field"><th class="field-name">episodes:</th><td class="field-body">List of <a class="reference internal" href="#episode"><span class="std std-ref">Episode</span></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">summary:</th><td class="field-body">Description of series</td>
+</tr>
+<tr class="field-even field"><th class="field-name">status:</th><td class="field-body">Status</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">views:</th><td class="field-body">Number of views</td>
+</tr>
+<tr class="field-even field"><th class="field-name">aired:</th><td class="field-body">A year or date that were series aired</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="episode">
+<span id="id4"></span><h2>Episode<a class="headerlink" href="#episode" title="Permalink to this headline">¶</a></h2>
+<p>Episode object has following attributes:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">title:</th><td class="field-body">Title of an episode</td>
+</tr>
+<tr class="field-even field"><th class="field-name">url:</th><td class="field-body">URL</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">date_added:</th><td class="field-body">Date the episode was added to the site (<code class="docutils literal"><span class="pre">datetime</span></code> object)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">download_links:</th><td class="field-body">Dictionary of links to download episode. This is not implemented yet.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="constants">
+<span id="id5"></span><h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<p>You will use these constants for working with <a class="reference internal" href="#series"><span class="std std-ref">Series</span></a> and
+for creating <a class="reference internal" href="#cartoonlist"><span class="std std-ref">CartoonList</span></a>. See <a class="reference internal" href="#iterator-example"><span class="std std-ref">iterator example</span></a>.</p>
+<div class="section" id="genres">
+<h3>Genres<a class="headerlink" href="#genres" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="65%" />
+<col width="35%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.ACTION</span></code></td>
+<td>Action</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.ADVENTURE</span></code></td>
+<td>Adventure</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.ANIMATION</span></code></td>
+<td>Animation</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.BIOGRAPHY</span></code></td>
+<td>Biography</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.COMEDY</span></code></td>
+<td>Comedy</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.CRIME</span></code></td>
+<td>Crime</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.DOCUMENTARY</span></code></td>
+<td>Documentary</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.DRAMA</span></code></td>
+<td>Drama</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.FAMILY</span></code></td>
+<td>Family</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.FANTASY</span></code></td>
+<td>Fantasy</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.GAMESHOW</span></code></td>
+<td>Game-Show</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.HISTORY</span></code></td>
+<td>History</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.HORROR</span></code></td>
+<td>Horror</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.MOVIE</span></code></td>
+<td>Movie</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.MUSIC</span></code></td>
+<td>Music</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.MUSICAL</span></code></td>
+<td>Musical</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.MYSTERY</span></code></td>
+<td>Mystery</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.PRESCHOOL</span></code></td>
+<td>Preschool</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.ROMANCE</span></code></td>
+<td>Romance</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.SCIFI</span></code></td>
+<td>Sci-Fi</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.SHORT</span></code></td>
+<td>Short</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.SPORT</span></code></td>
+<td>Sport</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.SUPERNATURAL</span></code></td>
+<td>Supernatural</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GENRE.THRILLER</span></code></td>
+<td>Thriller</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">GENRE.WAR</span></code></td>
+<td>War</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="status">
+<h3>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="69%" />
+<col width="31%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">STATUS.ONGOING</span></code></td>
+<td>Ongoing</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">STATUS.COMPLETED</span></code></td>
+<td>Completed</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Reference Guide</a><ul>
+<li><a class="reference internal" href="#import">Import</a></li>
+<li><a class="reference internal" href="#kisscartoon">KissCartoon</a><ul>
+<li><a class="reference internal" href="#list-method">.list method</a></li>
+<li><a class="reference internal" href="#list-genre-method">.list_genre method</a></li>
+<li><a class="reference internal" href="#search-method">.search method</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cartoonlist">CartoonList</a></li>
+<li><a class="reference internal" href="#series">Series</a></li>
+<li><a class="reference internal" href="#episode">Episode</a></li>
+<li><a class="reference internal" href="#constants">Constants</a><ul>
+<li><a class="reference internal" href="#genres">Genres</a></li>
+<li><a class="reference internal" href="#status">Status</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">KissCartoon API&#8217;s documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/reference.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Thyrst.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/reference.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -3,8 +3,8 @@
 import unittest
 from unittest import mock
 from datetime import datetime
-from kisscartoon import KissCartoon, CartoonList, Episode, Series, \
-    KissGrab, GENRE, STATUS
+from KissCartoon import KissCartoon, CartoonList, Episode, Series, \
+    GENRE, STATUS, PaginatorError
 
 
 class TestConstants(unittest.TestCase):
@@ -35,8 +35,8 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(GENRE.WAR, 'War')
 
     def test_statuses(self):
-        self.assertEqual(STATUS.ONGOING, ('Ongoing', 'upcoming'))
-        self.assertEqual(STATUS.COMPLETED, ('Completed', 'complete'))
+        self.assertEqual(STATUS.ONGOING, 'Ongoing')
+        self.assertEqual(STATUS.COMPLETED, 'Completed')
 
 
 class KissCartoonTest(unittest.TestCase):
@@ -50,7 +50,7 @@ class KissCartoonTest(unittest.TestCase):
         kiss = KissCartoon('kisscartoon.io')
         self.assertEqual(kiss.url, 'https://kisscartoon.io')
 
-    @mock.patch('kisscartoon.KissGrab')
+    @mock.patch('KissCartoon.KissGrab')
     def test_top_lists_properties(self, grab):
         url = 'https://kisscartoon.io'
         kiss = KissCartoon(url)
@@ -106,19 +106,87 @@ class KissCartoonTest(unittest.TestCase):
         list3 = kiss.search('and')
         self.assertIsInstance(list3, CartoonList)
         self.assertEqual(len(list3.series), 50)
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(PaginatorError):
             list3.back()
 
         try:
             list1.back()
-        except RuntimeError:
-            self.assertTrue(False, msg='Back button not found')
+        except PaginatorError:
+            self.assertTrue(False, msg='Can\'t go back')
 
         self.assertEqual(list1.page, 3)
 
 
-class CartoonListTest:
-    pass
+class CartoonListTest(unittest.TestCase):
+
+    def test_len(self):
+        kiss_list = KissCartoon().list(first_letter='r', status=STATUS.COMPLETED)
+        self.assertGreater(len(kiss_list), 170)
+        self.assertGreater(kiss_list.max_page*50 + 1, len(kiss_list))
+
+        kiss_list = KissCartoon().list()
+        self.assertGreater(len(kiss_list), (kiss_list.max_page - 1)*50)
+        self.assertGreater(kiss_list.max_page*50 + 1, len(kiss_list))
+
+    def test_iterator(self):
+        kiss_list = KissCartoon().list()
+
+        for series in kiss_list:
+            self.assertIsInstance(series, Series)
+            if kiss_list.page == 2:
+                break
+        else:
+            self.assertTrue(False, msg='Iterator isn\'t paging.')
+
+        kiss_list.goto(kiss_list.max_page)
+
+        for i, series in enumerate(kiss_list):
+            self.assertIsInstance(series, Series)
+            self.assertGreater(50, i, msg='StopIteration didn\'t raise')
+
+    def test_search(self):
+        kiss_list = KissCartoon().search('and', status=STATUS.COMPLETED)
+        self.assertGreater(len(kiss_list), 380)
+        self.assertGreater(kiss_list.max_page, 7)
+        self.assertEqual(len(kiss_list.series), 50)
+
+        for series in kiss_list.series:
+            self.assertIsInstance(series, Series)
+            self.assertIn('and', series.title)
+            self.assertEqual(series.status, STATUS.COMPLETED)
+
+    def test_series(self):
+        kiss_list = KissCartoon().list()
+
+        self.assertIsInstance(kiss_list.series, list)
+        self.assertEqual(len(kiss_list.series), 50)
+        for series in kiss_list.series:
+            self.assertIsInstance(series, Series)
+            self.assertIsNotNone(series.status)
+            self.assertTrue(series.latest_episode is None
+                            or isinstance(series.latest_episode, Episode))
+
+    def test_page_navigation(self):
+        kiss_list = KissCartoon().list_genre(GENRE.COMEDY)
+        self.assertEqual(kiss_list.page, 1)
+        self.assertGreater(kiss_list.max_page, 45)
+
+        with self.assertRaises(PaginatorError):
+            kiss_list.back()
+
+        kiss_list.next()
+        self.assertEqual(kiss_list.page, 2)
+        kiss_list.back()
+        self.assertEqual(kiss_list.page, 1)
+
+        kiss_list.goto(kiss_list.max_page)
+        self.assertEqual(kiss_list.page, kiss_list.max_page)
+
+        with self.assertRaises(PaginatorError):
+            kiss_list.next()
+
+        kiss_list.goto(kiss_list.max_page + 1)
+        self.assertEqual(len(kiss_list.series), 0)
 
 
 class SeriesTest(unittest.TestCase):
@@ -130,37 +198,31 @@ class SeriesTest(unittest.TestCase):
     def test_attributes(self):
         title = 'Series 1'
         url = 'my url'
-        series = Series(KissGrab(), title, url)
+        series = Series(title, url)
 
         self.assertEqual(series.title, title)
         self.assertEqual(series.url, url)
 
-    def test_calling_update(self):
+    @mock.patch('KissCartoon.KissGrab')
+    def test_calling_update(self, grab):
         grab = mock.Mock()
         grab.doc.tree.xpath.return_value = ''
         episode = 'episode'
-        series = Series(grab, 'title', 'url', 'image_url', latest_episode=episode)
+        series = Series('title', 'url', 'image_url', latest_episode=episode)
         self.assertEqual(series.latest_episode, episode)
 
-        grab.go.assert_not_called()
+        series._grab.go.assert_not_called()
         self.assertEqual(series.episodes, [])
-        grab.go.assert_called_once()
+        series._grab.go.assert_called_once()
 
     def test_properties(self):
-        grab = KissGrab()
-        grab.go('https://kisscartoon.io/Cartoon/Brickleberry-Season-01/')
-
-        grab_mock = mock.Mock()
-        grab_mock.doc.tree = grab.doc.tree
-
         series = Series(
-            grab_mock,
             'Brickleberry Season 01',
-            'http://kimcartoon.me/Cartoon/Brickleberry-Season-01',
+            'https://kisscartoon.io/Cartoon/Brickleberry-Season-01/',
             'http://kimcartoon.me/Uploads/Etc/11-24-2014/2272881brick.jpg'
         )
 
-        self.assertEqual(series.status, STATUS.COMPLETED[0])
+        self.assertEqual(series.status, STATUS.COMPLETED)
         self.assertGreater(series.views, 380000)
         self.assertEqual(series.aired, '2012')
         self.assertEqual(series.genres, [GENRE.COMEDY])
@@ -174,7 +236,27 @@ class SeriesTest(unittest.TestCase):
         self.assertEqual(series.latest_episode.title,
                          'Watch Brickleberry Season 01 Episode 09 Daddy Issues')
         self.assertEqual(series.latest_episode.date_added, datetime(2014, 11, 25))
-        grab_mock.go.assert_called_once()
+
+
+    @mock.patch('KissCartoon.KissGrab')
+    def test_updating_properties(self, grab):
+        series = Series('title', 'url', genres=['genre'])
+
+        # no updates on init
+        series._grab.go.assert_not_called()
+
+        # no updates when property was already set
+        series.genres
+        series._grab.go.assert_not_called()
+
+        # update when property is not updated
+        series.episodes
+        series._grab.go.assert_called_once()
+
+        # no new updates when property is already updated
+        series._views = 10
+        series.views
+        series._grab.go.assert_called_once()
 
 
 class EpisodeTest(unittest.TestCase):
@@ -184,19 +266,19 @@ class EpisodeTest(unittest.TestCase):
             Episode()
 
     def test_date_added(self):
-        episode = Episode(KissGrab(), 'title', 'url', '4/14/2011')
+        episode = Episode('title', 'url', '4/14/2011')
         self.assertIsInstance(episode.date_added, datetime)
         self.assertEqual(episode.date_added, datetime(2011, 4, 14))
 
     def test_attributes(self):
         title = 'Episode 1'
         url = 'my url'
-        episode = Episode(KissGrab(), title, url)
+        episode = Episode(title, url)
 
         self.assertEqual(episode.title, title)
         self.assertEqual(episode.url, url)
 
     #def test_download_links(self):
-    #    episode = Episode(KissGrab(), 'Brickleberry', 'https://kisscartoon.io/Cartoon/Brickleberry-Season-01/Episode-01-Welcome-to-Brickleberry?id=20483')
+    #    episode = Episode('Brickleberry', 'https://kisscartoon.io/Cartoon/Brickleberry-Season-01/Episode-01-Welcome-to-Brickleberry?id=20483')
     #    downloads = OrderedDict(episode.download_links)
     #    self.assertEqual(downloads, OrderedDict())
