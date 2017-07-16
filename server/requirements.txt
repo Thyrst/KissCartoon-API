@@ -2,3 +2,4 @@ django
 djangorestframework
 kisscartoon-api
 gunicorn
+weblib==0.1.23
