@@ -4,3 +4,4 @@ __pycache__
 /build/
 /kisscartoon_api.egg-info/
 /.tox
+/.vscode/
