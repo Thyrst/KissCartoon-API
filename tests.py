@@ -282,3 +282,7 @@ class EpisodeTest(unittest.TestCase):
     #    episode = Episode('Brickleberry', 'https://kisscartoon.io/Cartoon/Brickleberry-Season-01/Episode-01-Welcome-to-Brickleberry?id=20483')
     #    downloads = OrderedDict(episode.download_links)
     #    self.assertEqual(downloads, OrderedDict())
+
+if __name__ == '__main__':
+    unittest.main()
+    
