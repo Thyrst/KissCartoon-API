@@ -1,0 +1,4 @@
+django
+djangorestframework
+kisscartoon-api
+gunicorn
